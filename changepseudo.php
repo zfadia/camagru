@@ -10,22 +10,15 @@ session_start();
     <title> camagru </title>
 </head>
 <header>
-    <div id="titre_principal">
-        <h1> camagru </h1>
-        <h2> modifier le pseudo </h2>
-    </div>
-
-    <nav>
-        <ul>
-            <li><a href="inscription.php">inscription</a></li>
-            <li><a href="deconnexion.php">deconnexion</a></li>
-        </ul>
-    </nav>
+   
 </header>
 
 <body>
+<?php
+include 'header.php';
+?>    
     <div id="bloc_page">
-        <form action="" method="GET">
+        <form action="" method="POST">
             <p><label>pseudo </label><input type="text" name="pseudo" required /></P>
             <p><label>newpseudo </label><input type="text" name="newpseudo" required /></p>
             <input type="submit" value="soumettre">
@@ -41,23 +34,20 @@ session_start();
     }
     include 'fonction.php';
     if (verifpseudo($bdd) == 0) {
-        if (
-            isset($_GET['pseudo']) && isset($_GET['newpseudo']) &&
-            !empty($_GET['pseudo']) && !empty($_GET['newpseudo'])
+        if (isset($_POST['pseudo']) && isset($_POST['newpseudo']) &&
+            !empty($_POST['pseudo']) && !empty($_POST['newpseudo'])
         ) {
             $req = $bdd->prepare('UPDATE data_user set pseudo=?  WHERE pseudo=?');
-            $req->execute(array($_GET['newpseudo'], $_GET['pseudo']));
+            $req->execute(array($_POST['newpseudo'], $_POST['pseudo']));
             echo '<p> felicitation vous avez modifier votre pseudo </p>';
         }
-    } else {
+    } 
+    else
+    {
         echo "remplire les champs avec des info differente";
     }
+
     ?>
 </body>
-<footer>
-    <div id="deconnecxon">
-        <input type="submit" value="deconnecxion">
-    </div>
-</footer>
 
 </html>

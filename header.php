@@ -4,12 +4,14 @@
 
     </div>
     <?php
+    include "fonction.php";
     if (isset($_SESSION['pseudo'])) {
-        echo "<p> bonjour" . $_SESSION['pseudo'];
+        echo "<p> bonjour"."  " .$_SESSION['pseudo'];
         $text = "<nav>
     <ul>
-        <li><a href='parametre.php'>parametre</a></li>
         <li><a href='deconnexion.php'>deconnexion</a></li>
+        <li><a href='changemdp.php'>changemdp</a></li>
+        <li><a href='changepseudo.php'>changepseudo</a></li>
     </ul>
 </nav>";
         echo $text;
@@ -23,5 +25,6 @@
 </nav>";
         echo $text2;
     }
+    
     ?>
 </header>
