@@ -1,19 +1,14 @@
 <?php
-session_start();    
+
+include 'headerbdd.php';
+include 'header.php';
+
 ?>    
 <!DOCTYPE html>
 
 <html>
-    <?php
-        try {
-            $bdd = new PDO('mysql:host=localhost;dbname=camagru;charset=utf8', 'root', 'rootroot');
-        } catch (Exception $e) {
-            die('error :' . $e->getMessage());
-        }
+   
         
-        ?>
-        
-
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="index.css" />
@@ -21,39 +16,44 @@ session_start();
 
 
 <body>
-<?php
-include 'header.php';
 
-?>
-    <div id="bloc_page">
-        <form action="" method="GET">
-            <p><label>pseudo</label><input type="text" name="pseudo" required /></P>
-            <p><label>new password </label><input type="password" name="newpassword" required /></p>
-            <p><label>new password verification </label><input type="password" name="newpasswordverif" required /></p>
-            <input type="submit" value="soumettre">
-        </form>
-    </div>
-    <?php
-    try {
-        $bdd = new PDO('mysql:host=localhost;dbname=camagru;charset=utf8', 'root', 'rootroot');
-    } catch (Exception $e) {
-        die('error :' . $e->getMessage());
-    }
-    if (isset($_GET['pseudo']) && 
-        isset($_GET['newpasswordverif']) && isset($_GET['newpassword']) &&
-        !empty($_GET['pseudo'])&&!empty($_GET['newpasswordverif']) && !empty($_GET['newpassword'])
-    ) {
-       
-    if ($_GET['newpassword'] == $_GET['newpasswordverif'])
-    $mdp = password_hash($_GET['newpassword'], PASSWORD_DEFAULT);
-        $req = $bdd->prepare('UPDATE data_user SET `password`=? WHERE pseudo=?');
-        $req->execute(array($mdp, $_GET['pseudo']));
-        echo '<p> felicitation vous avez modifier votre password </p>';
-    } else
-        echo '<p> verifier vos informations </p>';
+<?php
+ if (isset($_GET['tokenmdpoublie']))
+ {
+     $req = $bdd->prepare('SELECT * FROM data_user WHERE tokenmdpoublie=? ');
+     $req->execute(array($_GET['tokenmdpoublie']));
+     $new = $req->fetch();
+
+ if (isset($new['tokenmdpoublie']) && $_GET['tokenmdpoublie'] == $new['tokenmdpoublie'])
+     {
+         echo' <div id="bloc_page">
+         <form action="" method="POST">
+         <legend>reinitialiser votre mot de passe :</legend>
+             <p><label>password : </label><input type="password" name="password" required /></p>
+             <p><input type="submit" value="soumettre" name="submitchange"/></p>
+             
+         </form>
+     </div>';
+     if (isset($_POST["submitchange"]))
+     {
+        $req=$bdd->prepare('UPDATE data_user SET `password`=? WHERE tokenmdpoublie=? ');
+        $req->execute(array(password_hash(htmlspecialchars($_POST['password']), PASSWORD_DEFAULT), htmlspecialchars($_GET['tokenmdpoublie'])));
+        $req= $bdd->prepare('UPDATE data_user SET tokenmdpoublie=? WHERE tokenmdpoublie=?');
+        $req->execute(array(NULL, htmlspecialchars($_GET['tokenmdpoublie'])));
+        header("Location: connexion.php");
+        exit(0);
+     }
+     }
+ else
+     echo'<p><a href="Mot_de_passe_oublie_email.php">Mot de passe oublié 2?</a></p>';
+
+ }
+ else
+     echo'<p><a href="Mot_de_passe_oublie_email.php">Mot de passe oublié ?</a></p>';
+
+
     ?>
 </body>
 
-
-
 </html>
+

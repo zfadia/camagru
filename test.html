@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form action="uplo.php" method="post" id="test" enctype="multipart/form-data">
+    Select image to upload:
+    <input type="file" id="b" name="fileToUpload" id="fileToUpload">
+    <input type="submit"  id="c" value="Upload Image" name="submit">
+</form>
+
+</body>
+</html>
+
+
+
+<?php
+$uploads = '/Users/zfadia/Desktop/MAMP/apache2/htdocs/Camagru/image';
+$fileToUpload = 'fadia123.png';
+if (isset($_POST['file']) &&
+!empty($_POST['file']))
+{
+  move_uploaded_file ( $$fileToUpload, $uploads);
+}
+?>
