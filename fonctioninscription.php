@@ -8,7 +8,7 @@ function verifinscription($bdd)
     ) {
         $reqverif = $bdd->prepare('SELECT pseudo, email from data_user WHERE pseudo=? OR email=?');
         $reqverif->execute(array($_POST['pseudo'], $_POST['email']));
-        while ($data = $reqverif->fetch()) {
+        while ($data =  $reqverif->fetch()) {
 
             if ($data['pseudo'] == $_POST['pseudo']) {
                 $faux = 1;
