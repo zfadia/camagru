@@ -71,6 +71,10 @@ function getAllPhoto($bdd)
 
 function recupidImage($image_uniqid, $bdd)
 {
+  if (!file_exists($image_uniqid)){
+    return false;
+  }
+
   $reqid = $bdd->prepare('SELECT id FROM photo WHERE image_uniqid=?');
   $reqid->execute(array($image_uniqid));
   $data = $reqid->fetch();
@@ -97,8 +101,11 @@ function canLike($idPhoto, $bdd)
   return (1);
 }
 
-if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_POST['submitlike']) && isset($_POST['namePhoto'])) {
-  $idPhoto = recupidImage($_POST["namePhoto"], $bdd);
+
+function likePhoto($bdd){
+  if (($idPhoto = recupidImage($_POST["namePhoto"], $bdd)) == false){
+    return;
+  }
 
   $canlike = canLike($idPhoto, $bdd);
   if ($canlike) {
@@ -119,9 +126,15 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_POST['submitlik
   }
 }
 
-if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_POST['submitcommentaire']) && isset($_POST['commentaire'])) {
-  $idPhoto = recupidImage(htmlspecialchars($_POST["namePhoto"]), $bdd);
+if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_POST['submitlike']) && isset($_POST['namePhoto'])) {
+  likePhoto($bdd);
+}
 
+
+function addComm($bdd){
+  if (($idPhoto = recupidImage($_POST["namePhoto"], $bdd)) == false){
+    return;
+  }
   $req = $bdd->prepare('INSERT INTO comm(id_photo, `user_id`, comm, date_comm ) VALUES (?,?,?,NOW())');
   $req->execute(array($idPhoto, htmlspecialchars($_SESSION['id']), htmlspecialchars($_POST['commentaire'])));
   $req->closeCursor();
@@ -129,6 +142,10 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_POST['submitcom
   $email = getemail($idPhoto, $bdd);
   if ($email['sendemail'] == 1)
     sendMail($email['email'], $bdd);
+}
+
+if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_POST['submitcommentaire']) && isset($_POST['commentaire'])) {
+  addComm($bdd);
 }
 
 
@@ -142,34 +159,6 @@ function getLike($bdd, $photo)
   $like = $data['like'];
   $req->closeCursor();
   return ($like);
-}
-
-function printAllPhoto($bdd)
-{
-  $array_photos = getAllPhoto($bdd);
-  foreach ( $array_photos as $photo) {
- 
-   {
-    echo '<div class="card" style="width: 18rem">';
-    echo '<div class="card-body">';
-    echo '<a href="vignette.php?img=' . $photo . '"><img style="margin:5px" width="250" height="150" src="' . $photo . '"></a>';
-    if (isset($_SESSION['id'])) {
-      $like = getLike($bdd, $photo);
-      echo '<form action="" method="POST">
-            <p><label> commentaire</label><input type="text" name="commentaire" required /></p>
-            <input type="text" name="namePhoto" value="' . $photo . '" hidden/>
-            <input type="submit" name="submitcommentaire" value="soumettre">
-            </form>';
-      echo '<form action="" method="POST">
-            <input type="hidden" name="namePhoto" value="' . $photo . '"/>
-            <p>' . $like . 'Like</p>
-            <input type="submit" name="submitlike" value="like">
-            </form>';
-      echo '</div>';
-      echo '</div>';
-     }
-    }
-  }
 }
 include("testepagination.php");
 

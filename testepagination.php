@@ -41,9 +41,9 @@ $depart = ($pageCourante-1)*$photoParPage;
                 <p>' . $like . 'Like</p>
                 <input type="submit" name="submitlike" value="like">
                 </form>';
-          echo '</div>';
-          echo '</div>';
-        }
+          
+        }echo '</div>';
+        echo '</div>';
       ?>
 
 
