@@ -1,5 +1,10 @@
  <!DOCTYPE html>
- <?php include 'headerbdd.php'; ?>
+ <?php include 'headerbdd.php'; 
+  if (!isset($_SESSION['id'])) {
+    header("location:index.php");
+    exit(0);
+  }
+ ?>
  <html>
 
  <head>

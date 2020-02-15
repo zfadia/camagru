@@ -12,7 +12,7 @@
    
   </button>
     <?php
-    if (isset($_SESSION['pseudo'])) {
+    if (isset($_SESSION['id'])) {
         $text = '
         <ul class="navbar-nav mr-auto">
         <li class="nav-item "><a class="nav-link text-light" href="user_page.php">cam <span class="sr-only">(current)</span></a></li>

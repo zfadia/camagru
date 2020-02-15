@@ -190,6 +190,7 @@
       $req = $bdd->prepare('SELECT * FROM photo WHERE id = ?');
       $req->execute(array($_POST['imgdel']));
       $data = $req->fetch();
+      if ($data != false){
       $req->closeCursor();
       if ($data['id_user'] == $_SESSION['id']) {
         unlink($data['image_uniqid']);
@@ -197,6 +198,7 @@
         $req->execute(array($_POST['imgdel']));
         $req->closeCursor();
       }
+    }
     }
 
     ?>

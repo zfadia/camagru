@@ -1,6 +1,11 @@
 <?php
 include 'headerbdd.php';
 include 'header.php';
+
+if (!isset($_SESSION['id'])) {
+  header("location:index.php");
+  exit(0);
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +39,7 @@ if (
   isset($_GET['email']) &&
   !empty($_GET['email'])
 ) {
-  $tokenmdpoublie = random_2();
+  $tokenmdpoublie = urlencode(random_2());
   $req = $bdd->prepare(' UPDATE data_user SET tokenmdpoublie=? WHERE email=?');
   $res = $req->execute(array($tokenmdpoublie, htmlspecialchars($_GET['email'])));
   $to = $_GET['email'];

@@ -1,6 +1,10 @@
 <?php
 include_once "fonctionconfirmemail.php";
 include_once "headerbdd.php";
+if (!isset($_SESSION['id'])) {
+    header("location:index.php");
+    exit(0);
+  }
 ?>
 
 

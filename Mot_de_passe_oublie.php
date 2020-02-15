@@ -3,6 +3,10 @@
 include 'headerbdd.php';
 include 'header.php';
 
+if (!isset($_SESSION['id'])) {
+    header("location:index.php");
+    exit(0);
+  }
 ?>    
 <!DOCTYPE html>
 
@@ -18,10 +22,11 @@ include 'header.php';
 <body>
 
 <?php
+$tokenMDP = urldecode(htmlspecialchars($_GET['tokenmdpoublie']));
  if (isset($_GET['tokenmdpoublie']))
  {
      $req = $bdd->prepare('SELECT * FROM data_user WHERE tokenmdpoublie=? ');
-     $req->execute(array($_GET['tokenmdpoublie']));
+     $req->execute(array($tokenMDP));
      $new = $req->fetch();
 
  if (isset($new['tokenmdpoublie']) && $_GET['tokenmdpoublie'] == $new['tokenmdpoublie'])
@@ -37,7 +42,7 @@ include 'header.php';
      if (isset($_POST["submitchange"]))
      {
         $req=$bdd->prepare('UPDATE data_user SET `password`=? WHERE tokenmdpoublie=? ');
-        $req->execute(array(password_hash(htmlspecialchars($_POST['password']), PASSWORD_DEFAULT), htmlspecialchars($_GET['tokenmdpoublie'])));
+        $req->execute(array(password_hash(htmlspecialchars($_POST['password']), PASSWORD_DEFAULT),$tokenMDP));
         $req= $bdd->prepare('UPDATE data_user SET tokenmdpoublie=? WHERE tokenmdpoublie=?');
         $req->execute(array(NULL, htmlspecialchars($_GET['tokenmdpoublie'])));
         header("Location: connexion.php");
