@@ -111,7 +111,7 @@
     if (isset($_POST['submitphoto']) && count($_POST) && isset($_FILES['picture']) && !empty($_FILES['picture']['name'])) {
 
       $tailleMax = 2097152;
-      $extentionValides = array('jpg', 'jpeg', 'gif', 'png');
+      $extentionValides = array('png');
       if ($_FILES['picture']['size'] <= $tailleMax)
         $extensionupload = strtolower(substr(strrchr($_FILES['picture']['name'], '.'), 1));
       if (in_array($extensionupload, $extentionValides)) {
@@ -125,7 +125,7 @@
         $id =  $_SESSION['id'];
         echo $file . " enregistre fichier !";
       } else {
-        $file = false;
+        $file = "";
       }
     } else if (isset($_POST['submitimg']) && count($_POST) && (strpos($_POST['img'], 'data:image/png;base64') === 0)) {
       $img = $_POST['img'];
@@ -161,7 +161,7 @@
       $hauteur_source = imagesy($source);
       imagealphablending($source, true);
       imagesavealpha($source, true);
-
+      if ($file != ""){
       $destination = imagecreatefrompng($file);
       $largeur_destination = imagesx($destination);
       $hauteur_destination = imagesy($destination);
@@ -179,6 +179,9 @@
       $req = $bdd->prepare('INSERT INTO photo(image_uniqid, id_user, `date`) VALUES(?, ?, NOW())');
       $req->execute(array($file, htmlspecialchars($_SESSION['id'])));
       $req->closeCursor();
+    }else{
+      echo "C'est une photo ca!? faut que du PNG";
+    }
     }
 
 
